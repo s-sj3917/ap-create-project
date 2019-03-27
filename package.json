@@ -1,0 +1,22 @@
+{
+  "name": "ap-create-project",
+  "version": "1.0.0",
+  "description": "hhhhhhhhhhhhhh",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s-sj3917/ap-create-project.git"
+  },
+  "author": "Joshua O'Neal - Needham",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/s-sj3917/ap-create-project/issues"
+  },
+  "homepage": "https://github.com/s-sj3917/ap-create-project#readme",
+  "dependencies": {
+    "lite-server": "^2.4.0"
+  }
+}
