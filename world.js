@@ -7,6 +7,10 @@ export class World {
     @param {Size} screenConfig
      */
     constructor(width, height, tileConfig, screenConfig) {
+        this._width = width;
+        this._height = height;
+        this._size = new Size(this.width, this.height);
+
         this._tileConfig = tileConfig;
         this._screenConfig = screenConfig;
 
@@ -15,6 +19,14 @@ export class World {
         for(let x = 0; x < width; x++) {
             this._blocks.push([]);
         }
+    }
+
+    get width() {
+        return this._width;
+    }
+
+    get height() {
+        return this._height;
     }
 
     /**
@@ -47,8 +59,8 @@ export class World {
         // move the x/y from the center to the edge
         // dividing by 2 because otherwise we would be moving the WHOLE screen offscreen
 
-        let screenHalfX = this._screenConfig.width / 2;
-        let screenHalfY = this._screenConfig.height / 2;
+        let screenHalfX = Math.floor(this._screenConfig.width / 2);
+        let screenHalfY = Math.floor(this._screenConfig.height / 2);
 
         let renderX = (playerX - (screenHalfX));
         let renderY = (playerY - (screenHalfY));
@@ -63,7 +75,7 @@ export class World {
                 let blockY = screenPosY + renderY;
 
                 // only draw if the block is inside of the bounds
-                if (this._screenConfig.inArea(blockX, blockY)) {
+                if (this._size.inArea(blockX, blockY)) {
                     let canvasX = screenPosX * this._tileConfig.width;
                     let canvasY = screenPosY * this._tileConfig.height;
 
