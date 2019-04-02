@@ -5,48 +5,66 @@ import { BlockManager } from "./blockManager.js";
 import { PlayerPosition } from "./playerPosition.js";
 import { InputManager } from "./input.js";
 
-let canvas = document.getElementById("game");
-
-/**
- @type {CanvasRenderingContext2D}
- */
-let context = canvas.getContext("2d");
-
 Math.clamp = function(value, lower, upper) {
     return Math.min(upper, Math.max(lower, value));
 };
 
-// TODO: clean
-class Main {
-    async run() {
-        let tileSize = new Size(64, 64);
-        let canvasSize = new Size(13, 9);
-        let w = new World(1000, 1000, tileSize, canvasSize);
-        let pos = new PlayerPosition(0, 0);
-        var input = new InputManager(pos, w);
+export class Main {
+    async run(worldWidth, worldHeight) {
+        // canvas stuff
+        this._canvas = document.getElementById("game");
+
+        /**
+        @type {CanvasRenderingContext2D}
+        */
+        this._context = this._canvas.getContext("2d");
+
+        // config
+        this._tileSize = new Size(64, 64);
+        this._canvasSize = new Size(13, 9);
+
+        this._playerPosition = new PlayerPosition(this._worldWidth / 2, 0);
+        this._world = new World(this._worldWidth, this._worldHeight, this._tileSize, this._canvasSize);
+
+        this._inputManager = this.setupInputManager(this._playerPosition, this._world);
+        this._blockManager = await this.setupBlockManager();
+
+        this._generator = new Generator(this._world, this._blockManager);
+        this._generator.generate();
+
+        this.render();
+    }
+
+    setupInputManager(playerPosition, world) {
+        let inputManager = new InputManager(playerPosition, world);
 
         document.onkeypress = function(kbEvent) {
-            input.handle(kbEvent);
-        };
+            inputManager.handle(kbEvent);
+        }
 
-        let bm = await BlockManager.load();
+        return inputManager;
+    }
 
-        let generator = new Generator(w, bm);
-        generator.generate();
+    async setupBlockManager() {
+        return await BlockManager.load();
+    }
 
-        var render;
-        render = function() {
-            // there's weird sky fragments at the upper right
-            context.clearRect(0, 0, 1000, 1000);
+    render() {
+        var context = this._context;
+        var canvas = this._canvas;
+        var world = this._world;
+        var position = this._playerPosition;
 
-            w.render(context, pos.x, pos.y);
-            window.requestAnimationFrame(render);
-        };
+        var renderFunc;
+        renderFunc = function() {
+            world.render(context, position.x, position.y);
+            window.requestAnimationFrame(renderFunc);
+        }
 
-        render();
+        renderFunc();
     }
 }
 
-new Main().run().then(() => {
-    console.log("done");
-})
+new Main().run().then((renderPromise) => {
+    console.log("done initializing");
+});
