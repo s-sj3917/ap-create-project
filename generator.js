@@ -27,7 +27,7 @@ export class Generator {
 
         for(let x = 0; x < this._world.width; x++) {
             currentY += this.rng(-1, 1);
-            currentY = this.clamp(currentY, 3, 9);
+            currentY = Math.clamp(currentY, 3, 9);
 
             // enough to qualify for a spikey boi
             if (currentY > 2 && genLine[x - 2] == currentY) {
@@ -86,9 +86,5 @@ export class Generator {
     rng(low, high) {
         high++;
         return Math.floor(Math.random() * (high - low)) + low;
-    }
-
-    clamp(current, low, high) {
-        return Math.min(high, Math.max(low, current));
     }
 }

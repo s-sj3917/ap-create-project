@@ -12,18 +12,21 @@ let canvas = document.getElementById("game");
  */
 let context = canvas.getContext("2d");
 
+Math.clamp = function(value, lower, upper) {
+    return Math.min(upper, Math.max(lower, value));
+};
+
+// TODO: clean
 class Main {
     async run() {
         let tileSize = new Size(64, 64);
-        let canvasSize = new Size(9, 9);
+        let canvasSize = new Size(13, 9);
         let w = new World(1000, 1000, tileSize, canvasSize);
         let pos = new PlayerPosition(0, 0);
-        var input = new InputManager();
+        var input = new InputManager(pos, w);
 
         document.onkeypress = function(kbEvent) {
-            console.log("input handle");
-            console.log(kbEvent);
-            input.handle(pos, kbEvent);
+            input.handle(kbEvent);
         };
 
         let bm = await BlockManager.load();
@@ -33,12 +36,14 @@ class Main {
 
         var render;
         render = function() {
+            // there's weird sky fragments at the upper right
+            context.clearRect(0, 0, 1000, 1000);
+
             w.render(context, pos.x, pos.y);
-            console.log("frame");
             window.requestAnimationFrame(render);
         };
 
-        window.requestAnimationFrame(render);
+        render();
     }
 }
 

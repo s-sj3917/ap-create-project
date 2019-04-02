@@ -30,58 +30,26 @@ export class ColorBlock extends Block {
     }
 }
 
-export class Sky extends ColorBlock {
-    constructor() {
-        super("#00FFFF");
-    }
-
-    /**
-    @returns {Promise<Sky>}
-     */
+export class Sky {
     static async load() {
-        let block = new Sky();
-        return block;
+        return new ColorBlock("#00FFFF");
     }
 }
 
-export class Grass extends ColorBlock {
-    constructor() {
-        super("#00FF00");
-    }
-
-    /**
-    @returns {Promise<Grass>}
-     */
+export class Grass {
     static async load() {
-        let block = new Grass();
-        return block;
+        return new ColorBlock("#00FF00");
     }
 }
 
-export class Dirt extends ColorBlock {
-    constructor() {
-        super("#9B7653");
-    }
-
-    /**
-    @returns {Promise<Dirt>}
-     */
+export class Dirt {
     static async load() {
-        let block = new Dirt();
-        return block;
+        return new ColorBlock("#9B7653");
     }
 }
 
 export class Stone extends ColorBlock {
-    constructor() {
-        super("#999999");
-    }
-
-    /**
-    @returns {Promise<Stone>}
-     */
     static async load() {
-        let block = new Stone();
-        return block;
+        return new ColorBlock("#999999");
     }
 }
