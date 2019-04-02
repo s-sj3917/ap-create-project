@@ -1,15 +1,30 @@
 import { PlayerPosition } from "./playerPosition.js";
 
 export class InputManager {
-    listen(playerPosition, draw) {
-        document.addEventListener("keydown", event => {
-        if (event.isComposing || event.keyCode === 68) {
-            playerPosition.x++;
-            draw();
-            return;
-        }
+    /**
+    @param {KeyboardEvent} event
+     */
+    handle(playerPosition, event) {
+        switch(event.key) {
+            case 'w':
+            case 'W': {
+                playerPosition.y--;
+            } break;
 
-            // do something
-        });
+            case 's':
+            case 'S': {
+                playerPosition.y++;
+            } break;
+
+            case 'a':
+            case 'A': {
+                playerPosition.x--;
+            } break;
+
+            case 'd':
+            case 'D': {
+                playerPosition.x++;
+            } break;
+        }
     }
 }

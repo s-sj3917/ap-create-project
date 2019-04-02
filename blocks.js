@@ -58,6 +58,20 @@ export class Grass extends ColorBlock {
     }
 }
 
+export class Dirt extends ColorBlock {
+    constructor() {
+        super("#9B7653");
+    }
+
+    /**
+    @returns {Promise<Dirt>}
+     */
+    static async load() {
+        let block = new Dirt();
+        return block;
+    }
+}
+
 export class Stone extends ColorBlock {
     constructor() {
         super("#999999");
