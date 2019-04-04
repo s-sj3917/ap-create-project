@@ -1,5 +1,5 @@
 import { World } from "./world.js";
-import { Sky } from "./blocks.js";
+import { Sky, Grass, Dirt, Stone } from "./blocks.js";
 import { BlockManager } from "./blockManager.js";
 
 export class Generator {
@@ -42,16 +42,16 @@ export class Generator {
                     // we have the 2nd spikey boi (look up)
                     // we're gonna set a sky to where the spike is and grass to flatten it
 
-                    this._world.setBlock(x - 1, genLine[x - 1], this._blockManager.sky);
+                    this._world.setBlock(x - 1, genLine[x - 1], new Sky());
                 } else {
                     // otherwise it's the first spikey boi (look up)
 
-                    this._world.setBlock(x - 1, genLine[x - 1], this._blockManager.dirt);
+                    this._world.setBlock(x - 1, genLine[x - 1], new Dirt());
                 }
 
                 // then fix the spike in the genLine
                 genLine[x - 1] = currentY;
-                this._world.setBlock(x - 1, currentY, this._blockManager.grass);
+                this._world.setBlock(x - 1, currentY, new Grass());
             }
 
             genLine.push(currentY);
@@ -62,18 +62,18 @@ export class Generator {
 
                 // eww, if else trees
                 if (y < currentY) {
-                    block = this._blockManager.sky;
+                    block = new Sky();
                 } else if (y == currentY) {
-                    block = this._blockManager.grass;
+                    block = new Grass();
                 } else {
                     let selectedChance = this.rng(0, 100);
 
                     // the farther down in Y we are, the less chance for grass
                     let chance = (y / this._world.height) * 100;
                     if (selectedChance > chance) {
-                        block = this._blockManager.dirt;
+                        block = new Dirt();
                     } else {
-                        block = this._blockManager.stone;
+                        block = new Stone();
                     }
                 }
 
