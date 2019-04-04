@@ -38,7 +38,7 @@ export class InputManager {
         }
 
         // clamp the position so they player can't go off screen
-        this._playerPosition.x = Math.clamp(this._playerPosition.x, 0, this._world.width);
-        this._playerPosition.y = Math.clamp(this._playerPosition.y, 0, this._world.height);
+        this._playerPosition.x = Math.clamp(this._playerPosition.x, 0, this._world.width - 1);
+        this._playerPosition.y = Math.clamp(this._playerPosition.y, 0, this._world.height - 1);
     }
 }

@@ -11,8 +11,8 @@ export class MiningService {
         this._world = world;
     }
 
-    mine() {
+    async mine() {
         let miningBlock = this._world.getBlock(this._playerPosition.x, this._playerPosition.y);
-        miningBlock.mine();
+        await miningBlock.mine();
     }
 }

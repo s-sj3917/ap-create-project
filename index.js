@@ -10,20 +10,49 @@ Math.clamp = function(value, lower, upper) {
     return Math.min(upper, Math.max(lower, value));
 };
 
+Promise.sleep = function(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// a queue was tried out, but the delayed execution
+// after a key press was not desirable
+// TODO: separate responsibility
 export class InputGlue {
     constructor(inputManager, miningService) {
         this._inputManager = inputManager;
         this._miningService = miningService;
+        this._queue = [];
+        this._queueHandled = false;
     }
 
     glue() {
-        var inputManager = this._inputManager;
-        var miningService = this._miningService;
+        var instance = this;
 
-        document.onkeypress = function(kbEvent) {
-            inputManager.handle(kbEvent);
-            miningService.mine();
+        document.onkeypress = async function(kbEvent) {
+            if (!instance._queueHandled) {
+                instance._queue.push(kbEvent);
+                await instance.handleQueue();
+            }
         };
+    }
+
+    async handleQueue() {
+        this._queueHandled = true;
+
+        while (this._queue.length > 0) {
+            let kbEvent = this._queue[0];
+            this._queue.shift();
+            await this.handle(kbEvent);
+        }
+
+        this._queueHandled = false;
+    }
+
+    async handle(kbEvent) {
+            console.log("keypress");
+            this._inputManager.handle(kbEvent);
+            await this._miningService.mine();
+            console.log("awake");
     }
 }
 

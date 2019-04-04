@@ -14,7 +14,7 @@ export class Block {
         throw "Insert code here";
     }
 
-    mine() {
+    async mine() {
         throw "Insert code here";
     }
 }
@@ -25,13 +25,14 @@ export class Unrenderable extends Block {
 }
 
 export class ColorBlock extends Block {
-    constructor(colorNormal, colorMined = colorNormal, mined = false) {
+    constructor(colorNormal, colorMined = colorNormal, sleepMs, mined = false) {
         super();
         this._colorNormal = colorNormal;
         this._colorMined = colorMined;
+        this._sleepMs = sleepMs;
+        this._mined = mined;
 
         this._color = this._colorNormal;
-        this._mined = mined;
     }
 
     get isMined() {
@@ -50,9 +51,14 @@ export class ColorBlock extends Block {
         ColorBlock.render(ctx, x, y, width, height, this._color);
     }
 
-    mine() {
+    async mine() {
+        if (this._mined) {
+            return;
+        }
+
         this._mined = true;
         this._color = this._colorMined;
+        await Promise.sleep(this._sleepMs);
     }
 }
 
@@ -62,7 +68,9 @@ export class ColorBlock extends Block {
 
 export class Sky extends ColorBlock {
     constructor() {
-        super("#00FFFF");
+        super("_", "#00FFFF", 0);
+        // sky should be quick to move in
+        this._mined = true;
     }
 
     static async load() {
@@ -71,7 +79,7 @@ export class Sky extends ColorBlock {
 
 export class Grass extends ColorBlock {
     constructor() {
-        super("#00FF00", "#009900");
+        super("#00FF00", "#009900", 100);
     }
 
     static async load() {
@@ -80,7 +88,7 @@ export class Grass extends ColorBlock {
 
 export class Dirt extends ColorBlock {
     constructor() {
-        super("#9B7653", "#5B3613");
+        super("#9B7653", "#5B3613", 100);
     }
 
     static async load() {
@@ -89,7 +97,7 @@ export class Dirt extends ColorBlock {
 
 export class Stone extends ColorBlock {
     constructor() {
-        super("#999999", "#595959");
+        super("#999999", "#595959", 250);
     }
 
     static async load() {
