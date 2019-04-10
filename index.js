@@ -5,6 +5,9 @@ import { BlockManager } from "./blockManager.js";
 import { PlayerPosition } from "./playerPosition.js";
 import { InputManager } from "./input.js";
 import { MiningService } from "./miningService.js";
+import { PlaceService } from "./placeService.js";
+import { Hotbar } from "./hotbar.js";
+import { Grass, Dirt, Stone } from "./blocks.js";
 
 Math.clamp = function(value, lower, upper) {
     return Math.min(upper, Math.max(lower, value));
@@ -18,41 +21,60 @@ Promise.sleep = function(ms) {
 // after a key press was not desirable
 // TODO: separate responsibility
 export class InputGlue {
-    constructor(inputManager, miningService) {
+    constructor(inputManager, miningService, placeService) {
         this._inputManager = inputManager;
         this._miningService = miningService;
-        this._queue = [];
-        this._queueHandled = false;
+        this._keyboardHandling = false;
+        this._mouseHandling = false;
+        this._placeService = placeService;
     }
 
     glue() {
         var instance = this;
-
-        document.onkeypress = async function(kbEvent) {
-            if (!instance._queueHandled) {
-                instance._queue.push(kbEvent);
-                await instance.handleQueue();
+        let placeCallback = async function(mEvent) {
+            if (instance.mouseDown) {
+                instance.handleMouse(mEvent);
             }
         };
-    }
 
-    async handleQueue() {
-        this._queueHandled = true;
+        document.onkeypress = async function(kbEvent) {
+            instance.handle(kbEvent);
+        };
 
-        while (this._queue.length > 0) {
-            let kbEvent = this._queue[0];
-            this._queue.shift();
-            await this.handle(kbEvent);
-        }
+        document.onmouseup = () => instance.mouseDown = false;
 
-        this._queueHandled = false;
+        document.onmousedown = async function(mEvent) {
+            instance.mouseDown = true;
+            await placeCallback(mEvent);
+        };
+
+        document.onmousemove = placeCallback;
     }
 
     async handle(kbEvent) {
-            console.log("keypress");
-            this._inputManager.handle(kbEvent);
-            await this._miningService.mine();
-            console.log("awake");
+        if (this._keyboardHandling) {
+            return;
+        }
+
+        this._keyboardHandling = true;
+
+        this._inputManager.handleKey(kbEvent);
+        await this._miningService.mine();
+
+        this._keyboardHandling = false;
+    }
+
+    handleMouse(mEvent) {
+        if (this._mouseHandling) {
+            return;
+        }
+
+        this._mouseHandling = true;
+
+        let result = this._inputManager.handleMouse(mEvent);
+        this._placeService.handle(result);
+
+        this._mouseHandling = false;
     }
 }
 
@@ -62,6 +84,9 @@ export class Main {
         this._worldHeight = worldHeight;
 
         // canvas stuff
+        /**
+        @type {HTMLCanvasElement}
+         */
         this._canvas = document.getElementById("game");
 
         /**
@@ -71,15 +96,28 @@ export class Main {
 
         // config
         this._tileSize = new Size(64, 64);
-        this._canvasSize = new Size(13, 9);
+        this._canvasSize = new Size(29 * 64, 15 * 64);
+
+        this._canvas.width = this._canvasSize.width * this._tileSize.width;
+        this._canvas.height = this._canvasSize.height * this._tileSize.height;
 
         this._playerPosition = new PlayerPosition(this._worldWidth / 2, 0);
         this._world = new World(this._worldWidth, this._worldHeight, this._tileSize, this._canvasSize);
+        this._hotbar = new Hotbar
+        (
+            5,
+            [
+                new Grass(),
+                new Dirt(),
+                new Stone()
+            ],
+            this._canvas, this._context, this._tileSize, this._canvasSize);
 
-        this._inputManager = new InputManager(this._playerPosition, this._world);
+        this._inputManager = new InputManager(this._playerPosition, this._world, this._canvas, this._tileSize, this._canvasSize);
         this._miningService = new MiningService(this._playerPosition, this._world);
+        this._placeService = new PlaceService(this._world);
 
-        new InputGlue(this._inputManager, this._miningService)
+        new InputGlue(this._inputManager, this._miningService, this._placeService)
             .glue();
 
         this._blockManager = await this.setupBlockManager();
@@ -99,11 +137,13 @@ export class Main {
         var canvas = this._canvas;
         var world = this._world;
         var position = this._playerPosition;
+        var hotbar = this._hotbar;
 
         var renderFunc;
         renderFunc = function() {
             context.clearRect(0, 0, canvas.width, canvas.height);
             world.render(context, position.x, position.y);
+            hotbar.render();
             window.requestAnimationFrame(renderFunc);
         }
 
@@ -111,7 +151,8 @@ export class Main {
     }
 }
 
+// DO NOT MAKE 10,000 BY 10,000
 let main = new Main();
-main.run(100, 100).then((renderPromise) => {
+main.run(10, 10).then((renderPromise) => {
     console.log("done initializing");
 });

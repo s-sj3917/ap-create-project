@@ -1,20 +1,27 @@
 import { PlayerPosition } from "./playerPosition.js";
 import { World } from "./world.js";
+import { Sky } from "./blocks.js";
 
 export class InputManager {
     /**
     @param {PlayerPosition} playerPosition,
     @param {World} world
+    @param {HTMLCanvasElement} canvas
+    @param {Size} tileSize
+    @param {Size} screenSize
      */
-    constructor(playerPosition, world) {
+    constructor(playerPosition, world, canvas, tileSize, screenSize) {
         this._playerPosition = playerPosition;
         this._world = world;
+        this._canvas = canvas;
+        this._tileSize = tileSize;
+        this._screenSize = screenSize;
     }
 
     /**
     @param {KeyboardEvent} event
      */
-    handle(event) {
+    handleKey(event) {
         switch(event.key) {
             case 'w':
             case 'W': {
@@ -40,5 +47,40 @@ export class InputManager {
         // clamp the position so they player can't go off screen
         this._playerPosition.x = Math.clamp(this._playerPosition.x, 0, this._world.width - 1);
         this._playerPosition.y = Math.clamp(this._playerPosition.y, 0, this._world.height - 1);
+    }
+
+    /**
+    @param {MouseEvent} event
+     */
+    handleMouse(event) {
+        // get x/y
+        // https://stackoverflow.com/a/18053642
+
+        let canvasRect = this._canvas.getBoundingClientRect();
+        let x = event.clientX - canvasRect.left;
+        let y = event.clientY - canvasRect.top;
+
+        // get where the grid position would be
+        x -= x % this._tileSize.width;
+        y -= y % this._tileSize.height;
+
+        y /= this._tileSize.height;
+        x /= this._tileSize.width;
+
+        // TODO: don't copy and paste this
+        // now we modify the x and y by the screen width since we have
+        // to account for the offset in rendering
+        let screenHalfX = Math.floor(this._screenSize.width / 2);
+        let screenHalfY = Math.floor(this._screenSize.height / 2);
+
+        x -= screenHalfX;
+        y -= screenHalfY;
+
+        // add the player position to the calculated x/y
+        // since all we have right now screen x/y
+        x += this._playerPosition.x;
+        y += this._playerPosition.y;
+
+        return { x: x, y: y };
     }
 }

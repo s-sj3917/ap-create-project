@@ -1,3 +1,5 @@
+import { Size } from "./size.js";
+
 export class Block {
     static load() {
         throw "Don't use the static load on block";
@@ -25,7 +27,7 @@ export class Unrenderable extends Block {
 }
 
 export class ColorBlock extends Block {
-    constructor(colorNormal, colorMined = colorNormal, sleepMs, mined = false) {
+    constructor(colorNormal, colorMined, sleepMs, mined = false) {
         super();
         this._colorNormal = colorNormal;
         this._colorMined = colorMined;
@@ -68,7 +70,7 @@ export class ColorBlock extends Block {
 
 export class Sky extends ColorBlock {
     constructor() {
-        super("_", "#00FFFF", 0);
+        super("#00FFFF", "#00FFFF", 0);
         // sky should be quick to move in
         this._mined = true;
     }
