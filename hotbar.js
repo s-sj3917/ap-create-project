@@ -18,6 +18,15 @@ export class Hotbar {
         this._tileConfig = tileConfig;
         this._screenConfig = screenConfig;
         this._borderSize = borderSize;
+
+        this._selected = this._blocks[0];
+    }
+
+    /**
+    @returns {Block}
+     */
+    get selected() {
+        return this._selected;
     }
 
     // TODO: more performance if i cache this?
@@ -63,6 +72,12 @@ export class Hotbar {
     }
 
     handle(mousePos) {
-        console.log(mousePos);
+        let rect = this.rect;
+
+        let x = mousePos.x - rect.point.x;
+        x -= x % this._tileConfig.width;
+        x /= this._tileConfig.width;
+
+        this._selected = this._blocks[x];
     }
 }

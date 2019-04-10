@@ -98,7 +98,7 @@ export class InputGlue {
             width: 1,
             height: 1,
         }, hotbar)) {
-            this._hotbar.handle(mousePos);
+            this._hotbar.handle(canvasPos);
         } else {
             this._placeService.handle(mousePos);
         }
