@@ -25,3 +25,22 @@ export class Size {
             && x < this.width && y < this.height;
     }
 }
+
+export class Rectangle {
+    /**
+    @param {Point} point
+    @param {Size} size
+     */
+    constructor(point, size) {
+        this.point = point;
+        this.size = size;
+    }
+}
+
+// TODO: replace player position with this?
+export class Point {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}

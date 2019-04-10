@@ -53,12 +53,9 @@ export class InputManager {
     @param {MouseEvent} event
      */
     handleMouse(event) {
-        // get x/y
-        // https://stackoverflow.com/a/18053642
-
-        let canvasRect = this._canvas.getBoundingClientRect();
-        let x = event.clientX - canvasRect.left;
-        let y = event.clientY - canvasRect.top;
+        let mouseOnCanvas = this.canvasPos(event);
+        let x = mouseOnCanvas.x;
+        let y = mouseOnCanvas.y;
 
         // get where the grid position would be
         x -= x % this._tileSize.width;
@@ -80,6 +77,17 @@ export class InputManager {
         // since all we have right now screen x/y
         x += this._playerPosition.x;
         y += this._playerPosition.y;
+
+        return { x: x, y: y };
+    }
+
+    canvasPos(event) {
+        // get x/y
+        // https://stackoverflow.com/a/18053642
+
+        let canvasRect = this._canvas.getBoundingClientRect();
+        let x = event.clientX - canvasRect.left;
+        let y = event.clientY - canvasRect.top;
 
         return { x: x, y: y };
     }
