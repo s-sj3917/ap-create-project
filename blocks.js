@@ -75,6 +75,10 @@ export class Sky extends ColorBlock {
         this._mined = true;
     }
 
+    get isSky() {
+        return true;
+    }
+
     static async load() {
     }
 }
@@ -100,6 +104,15 @@ export class Dirt extends ColorBlock {
 export class Stone extends ColorBlock {
     constructor() {
         super("#999999", "#595959", 250);
+    }
+
+    static async load() {
+    }
+}
+
+export class Plank extends ColorBlock {
+    constructor() {
+        super("#FFA500", "#8B4513", 150);
     }
 
     static async load() {

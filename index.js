@@ -7,7 +7,7 @@ import { InputManager } from "./input.js";
 import { MiningService } from "./miningService.js";
 import { PlaceService } from "./placeService.js";
 import { Hotbar } from "./hotbar.js";
-import { Grass, Dirt, Stone } from "./blocks.js";
+import { Grass, Dirt, Stone, Plank } from "./blocks.js";
 
 Math.clamp = function(value, lower, upper) {
     return Math.min(upper, Math.max(lower, value));
@@ -46,7 +46,10 @@ export class InputGlue {
         };
 
         document.onkeypress = async function(kbEvent) {
+            // we do the place callback on a key press because if we rendered the screen down a bit,
+            // we want to make sure that if the mouse is down, we place the block (if one needs to be0)
             instance.handle(kbEvent);
+            await placeCallback(instance._lastMEvent);
         };
 
         document.onmouseup = () => instance.mouseDown = false;
@@ -78,6 +81,7 @@ export class InputGlue {
         }
 
         this._mouseHandling = true;
+        this._lastMEvent = mEvent;
 
         // TODO: abstract the "if in hotbar do hotbar code" out code so i can make game ui elements easier
         let mousePos = this._inputManager.handleMouse(mEvent);
@@ -144,15 +148,16 @@ export class Main {
         (
             5,
             [
-                new Grass(),
-                new Dirt(),
-                new Stone()
+                Grass,
+                Dirt,
+                Stone,
+                Plank
             ],
             this._canvas, this._context, this._tileSize, this._canvasSize);
 
         this._inputManager = new InputManager(this._playerPosition, this._world, this._canvas, this._tileSize, this._canvasSize);
         this._miningService = new MiningService(this._playerPosition, this._world);
-        this._placeService = new PlaceService(this._world);
+        this._placeService = new PlaceService(this._world, this._hotbar);
 
         new InputGlue(this._inputManager, this._miningService, this._placeService, this._hotbar)
             .glue();
@@ -161,6 +166,16 @@ export class Main {
 
         this._generator = new Generator(this._world, this._blockManager);
         this._generator.generate();
+
+        // we want to place the player on the block without sky
+        for (let y = 0; y < this._world.height; y++) {
+            // a bit abusive but \/shrug
+            if (!this._world.getBlock(this._playerPosition.x, y).isSky) {
+                 break;
+            }
+
+            this._playerPosition.y = y;
+        }
 
         this.render();
     }
@@ -191,6 +206,6 @@ export class Main {
 // DO NOT MAKE 10,000 BY 10,000
 // IF YOU DO, CONSULT https://3000-<url>.ws-us0.gitpod.io/index.js
 let main = new Main();
-main.run(100, 100).then((renderPromise) => {
+main.run(100, 200).then((renderPromise) => {
     console.log("done initializing");
 });

@@ -1,8 +1,5 @@
 ports:
 - port: 3000
-tasks:
-- init: yarn install
-  command: yarn start --hostname 0.0.0.0
 github:
   prebuilds:
     pullRequestsFromForks: true

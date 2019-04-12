@@ -1,12 +1,14 @@
 import { World } from "./world.js";
-import { Grass } from "./blocks.js";
+import { Hotbar } from "./hotbar.js";
 
 export class PlaceService {
     /**
     @param {World} world
+    @param {Hotbar} hotbar
      */
-    constructor(world) {
+    constructor(world, hotbar) {
         this._world = world;
+        this._hotbar = hotbar;
     }
 
     handle(place) {
@@ -18,6 +20,6 @@ export class PlaceService {
             return;
         }
 
-        this._world.setBlock(place.x, place.y, new Grass());
+        this._world.setBlock(place.x, place.y, new this._hotbar.selected());
     }
 }

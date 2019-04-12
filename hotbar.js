@@ -4,7 +4,7 @@ import { Size, Rectangle, Point } from "./size.js";
 export class Hotbar {
     /**
     @param {number} hotbarSize
-    @param {Block[]} blocks
+    @param {ConstructorInfo[]} blocks
     @param {HTMLCanvasElement} canvas
     @param {CanvasRenderingContext2D} context
     @param {Size} tileConfig
@@ -19,14 +19,19 @@ export class Hotbar {
         this._screenConfig = screenConfig;
         this._borderSize = borderSize;
 
-        this._selected = this._blocks[0];
+        this._selected = 0;
+
+        this._instantiatedBlocks = [];
+        for(let i = 0; i < this._blocks.length; i++) {
+            this._instantiatedBlocks[i] = new this._blocks[i]();
+        }
     }
 
     /**
-    @returns {Block}
+    @returns {ConstructorInfo}
      */
     get selected() {
-        return this._selected;
+        return this._blocks[this._selected];
     }
 
     // TODO: more performance if i cache this?
@@ -56,19 +61,34 @@ export class Hotbar {
         // then we're going to render 5 blocks
         let rect = this.rect;
 
+        let x = rect.point.x + this._borderSize;
+        let y = rect.point.y + this._borderSize;
+
         // make a tiny 8x8 border around the blocks we're gonna render
         this._context.fillStyle = "#222222";
 
         this._context.fillRect(rect.point.x, rect.point.y, rect.size.width, rect.size.height);
 
-        let x = rect.point.x + this._borderSize;
-        let y = rect.point.y + this._borderSize;
-
         // render every block we have
-        for(let i = 0; i < this._blocks.length && i < this._hotbarSize; i++) {
-            let block = this._blocks[i];
-            block.render(this._context, x + (this._tileConfig.width * i), y, this._tileConfig.width, this._tileConfig.height);
+        for(let i = 0; i < this._instantiatedBlocks.length && i < this._hotbarSize; i++) {
+            // don't render the selected block = we're going to render it specially
+            if (i == this._selected) {
+                continue;
+            }
+
+            this.renderBlock(i, x, y);
         }
+
+        // the currently selected block
+        this._context.fillStyle = "#FFF";
+        this._context.fillRect(x + (this._tileConfig.width * this._selected) - 2, y - 2, this._tileConfig.width + 4, this._tileConfig.height + 4);
+
+        this.renderBlock(this._selected, x, y);
+    }
+
+    renderBlock(id, x, y) {
+        let block = this._instantiatedBlocks[id];
+        block.render(this._context, x + (this._tileConfig.width * id), y, this._tileConfig.width, this._tileConfig.height);
     }
 
     handle(mousePos) {
@@ -78,6 +98,6 @@ export class Hotbar {
         x -= x % this._tileConfig.width;
         x /= this._tileConfig.width;
 
-        this._selected = this._blocks[x];
+        this._selected = x;
     }
 }
