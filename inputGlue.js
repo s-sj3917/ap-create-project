@@ -51,6 +51,7 @@ export class InputGlue {
 
     /**
     @param {KeyboardEvent} kbEvent
+    @return {Promise}
      */
     async handle(kbEvent) {
         if (this._keyboardHandling) {

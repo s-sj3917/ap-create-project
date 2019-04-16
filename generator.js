@@ -83,6 +83,11 @@ export class Generator {
     }
 
     // low to high inclusive
+    /**
+    @param {number} low
+    @param {number} high
+    @return {number}
+     */
     rng(low, high) {
         high++;
         return Math.floor(Math.random() * (high - low)) + low;

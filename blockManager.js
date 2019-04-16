@@ -1,19 +1,19 @@
-// yea i know it's bad :p
-
 import { Sky, Grass, Dirt, Stone } from "./blocks.js";
 
+/**
+Utility for loading all the blocks
+ */
 export class BlockManager {
-    static async load() {
-        // ewwwww
-        let loadBlocks = [
+
+    /**
+    @return {Promise}
+     */
+    static load() {
+        return Promise.all([
             Sky.load(),
             Grass.load(),
             Dirt.load(),
             Stone.load()
-        ];
-
-        for(let i of loadBlocks) {
-            await i;
-        }
+        ]);
     }
 }

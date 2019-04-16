@@ -1,6 +1,9 @@
 import { Size } from "./size.js";
 
 export class Block {
+    /**
+    @return {Promise}
+     */
     static load() {
         throw "Don't use the static load on block";
     }
@@ -11,11 +14,18 @@ export class Block {
 
     /**
     @param {CanvasRenderingContext2D} ctx
+    @param {number} x
+    @param {number} y
+    @param {number} width
+    @param {number} height
      */
     render(ctx, x, y, width, height) {
         throw "Insert code here";
     }
 
+    /**
+    @return {Promise}
+     */
     async mine() {
         throw "Insert code here";
     }
@@ -27,8 +37,15 @@ export class Unrenderable extends Block {
 }
 
 export class ColorBlock extends Block {
+    /**
+    @param {string} colorNormal
+    @param {string} colorMined
+    @param {number} sleepMs
+    @param {boolean} mined
+     */
     constructor(colorNormal, colorMined, sleepMs, mined = false) {
         super();
+
         this._colorNormal = colorNormal;
         this._colorMined = colorMined;
         this._sleepMs = sleepMs;
@@ -37,22 +54,40 @@ export class ColorBlock extends Block {
         this._color = this._colorNormal;
     }
 
+    /**
+    @return {boolean}
+     */
     get isMined() {
         return this._mined;
     }
 
     /**
     @param {CanvasRenderingContext2D} ctx
+    @param {number} x
+    @param {number} y
+    @param {number} width
+    @param {number} height
+    @param {string} color
      */
     static render(ctx, x, y, width, height, color) {
         ctx.fillStyle = color;
         ctx.fillRect(x, y, width, height);
     }
 
+    /**
+    @param {CanvasRenderingContext2D} ctx
+    @param {number} x
+    @param {number} y
+    @param {number} width
+    @param {number} height
+     */
     render(ctx, x, y, width, height) {
         ColorBlock.render(ctx, x, y, width, height, this._color);
     }
 
+    /**
+    @return {Promise}
+     */
     async mine() {
         if (this._mined) {
             return;
@@ -75,10 +110,16 @@ export class Sky extends ColorBlock {
         this._mined = true;
     }
 
+    /**
+    @return {boolean}
+     */
     get isSky() {
         return true;
     }
 
+    /**
+    @return {Promise}
+     */
     static async load() {
     }
 }
@@ -88,6 +129,9 @@ export class Grass extends ColorBlock {
         super("#00FF00", "#009900", 100);
     }
 
+    /**
+    @return {Promise}
+     */
     static async load() {
     }
 }
@@ -97,6 +141,9 @@ export class Dirt extends ColorBlock {
         super("#9B7653", "#5B3613", 100);
     }
 
+    /**
+    @return {Promise}
+     */
     static async load() {
     }
 }
@@ -106,6 +153,9 @@ export class Stone extends ColorBlock {
         super("#999999", "#595959", 250);
     }
 
+    /**
+    @return {Promise}
+     */
     static async load() {
     }
 }
@@ -115,6 +165,9 @@ export class Plank extends ColorBlock {
         super("#FFA500", "#8B4513", 150);
     }
 
+    /**
+    @return {Promise}
+     */
     static async load() {
     }
 }
