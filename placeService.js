@@ -1,5 +1,6 @@
 import { World } from "./world.js";
 import { Hotbar } from "./hotbar.js";
+import { Point } from "./size.js";
 
 export class PlaceService {
     /**
@@ -11,6 +12,10 @@ export class PlaceService {
         this._hotbar = hotbar;
     }
 
+
+    /**
+    @param {Point} place
+     */
     handle(place) {
         // bounds checking
         if (this._world.width <= place.x ||

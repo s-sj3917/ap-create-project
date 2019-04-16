@@ -3,6 +3,8 @@ import { Unrenderable } from "./blocks.js";
 
 export class World {
     /**
+    @param {number} width
+    @param {number} height
     @param {Size} tileConfig
     @param {Size} screenConfig
      */
@@ -21,15 +23,23 @@ export class World {
         }
     }
 
+    /**
+    @return {number}
+     */
     get width() {
         return this._width;
     }
 
+    /**
+    @return {number}
+     */
     get height() {
         return this._height;
     }
 
     /**
+    @param {number} x
+    @param {number} y
     @param {Block} block
      */
     setBlock(x, y, block) {
@@ -37,6 +47,8 @@ export class World {
     }
 
     /**
+    @param {number} x
+    @param {number} y
     @returns {Block}
      */
     getBlock(x, y) {
@@ -51,6 +63,8 @@ export class World {
 
     /**
     @param {CanvasRenderingContext2D} ctx
+    @param {number} playerX
+    @param {number} playerY
      */
     render(ctx, playerX, playerY) {
         ctx.fillStyle = "#000000";

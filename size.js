@@ -8,10 +8,16 @@ export class Size {
         this._height = height;
     }
 
+    /**
+    @return {number}
+     */
     get width() {
         return this._width;
     }
 
+    /**
+    @return {number}
+     */
     get height() {
         return this._height;
     }
@@ -19,6 +25,7 @@ export class Size {
     /**
     @param {number} x
     @param {number} y
+    @return {number}
      */
     inArea(x, y) {
         return x >= 0 && y >= 0
@@ -39,6 +46,10 @@ export class Rectangle {
 
 // TODO: replace player position with this?
 export class Point {
+    /**
+    @param {number} x
+    @param {number} y
+     */
     constructor(x, y) {
         this.x = x;
         this.y = y;

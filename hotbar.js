@@ -9,6 +9,7 @@ export class Hotbar {
     @param {CanvasRenderingContext2D} context
     @param {Size} tileConfig
     @param {Size} screenConfig
+    @param {number} borderSize
      */
     constructor(hotbarSize, blocks, canvas, context, tileConfig, screenConfig, borderSize = 8) {
         this._hotbarSize = hotbarSize;
@@ -31,10 +32,17 @@ export class Hotbar {
     @returns {ConstructorInfo}
      */
     get selected() {
+        if (this._blocks[this._selected] === undefined) {
+            return this._blocks[0];
+        }
+
         return this._blocks[this._selected];
     }
 
     // TODO: more performance if i cache this?
+    /**
+    @return {Rectangle}
+     */
     get rect() {
         // TODO: don't copy and paste this
         let x = Math.floor(this._screenConfig.width / 2);
@@ -86,11 +94,24 @@ export class Hotbar {
         this.renderBlock(this._selected, x, y);
     }
 
+    /**
+    @param {number} id
+    @param {number} x
+    @param {number} y
+     */
     renderBlock(id, x, y) {
         let block = this._instantiatedBlocks[id];
+
+        if (block === undefined) {
+            return;
+        }
+
         block.render(this._context, x + (this._tileConfig.width * id), y, this._tileConfig.width, this._tileConfig.height);
     }
 
+    /**
+    @param {Point} mousePos
+     */
     handle(mousePos) {
         let rect = this.rect;
 

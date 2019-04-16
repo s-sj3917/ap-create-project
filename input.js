@@ -1,10 +1,10 @@
-import { PlayerPosition } from "./playerPosition.js";
+import { Point } from "./size.js";
 import { World } from "./world.js";
 import { Sky } from "./blocks.js";
 
 export class InputManager {
     /**
-    @param {PlayerPosition} playerPosition,
+    @param {Point} playerPosition,
     @param {World} world
     @param {HTMLCanvasElement} canvas
     @param {Size} tileSize
@@ -78,9 +78,12 @@ export class InputManager {
         x += this._playerPosition.x;
         y += this._playerPosition.y;
 
-        return { x: x, y: y };
+        return new Point(x, y);
     }
 
+    /**
+    @param {MouseEvent} event
+     */
     canvasPos(event) {
         // get x/y
         // https://stackoverflow.com/a/18053642
@@ -89,6 +92,6 @@ export class InputManager {
         let x = event.clientX - canvasRect.left;
         let y = event.clientY - canvasRect.top;
 
-        return { x: x, y: y };
+        return new Point(x, y);
     }
 }

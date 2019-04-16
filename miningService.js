@@ -1,9 +1,9 @@
-import { PlayerPosition } from "./playerPosition.js";
+import { Point } from "./size.js";
 import { World } from "./world.js";
 
 export class MiningService {
     /**
-    @param {PlayerPosition} playerPosition
+    @param {Point} playerPosition
     @param {World} world
      */
     constructor(playerPosition, world) {
