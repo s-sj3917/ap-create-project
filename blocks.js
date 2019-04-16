@@ -1,5 +1,3 @@
-import { Size } from "./size.js";
-
 export class Block {
     /**
     @return {Promise}

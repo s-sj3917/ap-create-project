@@ -1,5 +1,5 @@
 import { Size } from "./size.js";
-import { Unrenderable } from "./blocks.js";
+import { Unrenderable, Block } from "./blocks.js";
 
 export class World {
     /**
@@ -7,11 +7,13 @@ export class World {
     @param {number} height
     @param {Size} tileConfig
     @param {Size} screenConfig
+    @param {HTMLCanvasElement} canvas
      */
-    constructor(width, height, tileConfig, screenConfig) {
+    constructor(width, height, tileConfig, screenConfig, canvas) {
         this._width = width;
         this._height = height;
         this._size = new Size(this.width, this.height);
+        this._canvas = canvas;
 
         this._tileConfig = tileConfig;
         this._screenConfig = screenConfig;
@@ -49,7 +51,7 @@ export class World {
     /**
     @param {number} x
     @param {number} y
-    @returns {Block}
+    @return {Block}
      */
     getBlock(x, y) {
         let block = this._blocks[x][y];
@@ -68,7 +70,7 @@ export class World {
      */
     render(ctx, playerX, playerY) {
         ctx.fillStyle = "#000000";
-        ctx.fillRect(0, 0, 800, 600);
+        ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);
 
         // move the x/y from the center to the edge
         // dividing by 2 because otherwise we would be moving the WHOLE screen offscreen

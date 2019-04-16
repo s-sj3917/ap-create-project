@@ -14,6 +14,9 @@ export class Generator {
     }
 
     // eww generation code :nauseated:
+    /**
+    @description Generates a world and writes it to the world.
+     */
     generate() {
 
         // we're gonna go across and randomize our movement's a bit
@@ -30,7 +33,7 @@ export class Generator {
             currentY = Math.clamp(currentY, 3, 9);
 
             // enough to qualify for a spikey boi
-            if (currentY > 2 && genLine[x - 2] == currentY) {
+            if (genLine[x - 2] == currentY) {
                 // make sure there are no spikey bois
                 //               -
                 // --- --- or --- ---
@@ -82,8 +85,8 @@ export class Generator {
         }
     }
 
-    // low to high inclusive
     /**
+    @description Generates a random number from low to high inclusive.
     @param {number} low
     @param {number} high
     @return {number}

@@ -33,6 +33,7 @@ export class Size {
     }
 }
 
+// TODO: get for x, y, width, height
 export class Rectangle {
     /**
     @param {Point} point
@@ -41,6 +42,18 @@ export class Rectangle {
     constructor(point, size) {
         this.point = point;
         this.size = size;
+    }
+
+    /**
+    @description Checks for collision with another rectangle
+    @param {Rectangle} other
+    @return {boolean}
+     */
+    collidesWith(other) {
+        return this.point.x < other.point.x + other.size.width &&
+            this.point.x + this.size.width > other.point.x &&
+            this.point.y < other.point.y + other.size.height &&
+            this.point.y + this.size.height > other.point.y;
     }
 }
 

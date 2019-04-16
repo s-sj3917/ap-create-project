@@ -1,6 +1,5 @@
 import { Point } from "./size.js";
 import { World } from "./world.js";
-import { Sky } from "./blocks.js";
 
 export class InputManager {
     /**

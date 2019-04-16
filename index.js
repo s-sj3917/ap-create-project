@@ -46,7 +46,7 @@ export class Main {
         this._canvas.height = this._canvasSize.height * this._tileSize.height;
 
         this._playerPosition = new Point(this._worldWidth / 2, 0);
-        this._world = new World(this._worldWidth, this._worldHeight, this._tileSize, this._canvasSize);
+        this._world = new World(this._worldWidth, this._worldHeight, this._tileSize, this._canvasSize, this._canvas);
         this._hotbar = new Hotbar
         (
             5,

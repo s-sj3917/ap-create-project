@@ -3,6 +3,7 @@ import { InputManager } from "./input.js";
 import { MiningService } from "./miningService.js";
 import { PlaceService } from "./placeService.js";
 import { Hotbar } from "./hotbar.js";
+import { Rectangle, Point, Size } from "./size.js";
 
 // a queue was tried out, but the delayed execution
 // after a key press was not desirable
@@ -34,7 +35,7 @@ export class InputGlue {
 
         document.onkeypress = async function(kbEvent) {
             // we do the place callback on a key press because if we rendered the screen down a bit,
-            // we want to make sure that if the mouse is down, we place the block (if one needs to be0)
+            // we want to make sure that if the mouse is down, we place the block (if one needs to be)
             instance.handle(kbEvent);
             await placeCallback(instance._lastMEvent);
         };
@@ -81,35 +82,16 @@ export class InputGlue {
         let mousePos = this._inputManager.handleMouse(mEvent);
         let canvasPos = this._inputManager.canvasPos(mEvent);
 
-        let rect = this._hotbar.rect;
-        let hotbar = {
-            x: rect.point.x,
-            y: rect.point.y,
-            width: rect.size.width,
-            height: rect.size.height
-        };
+        let hotbar = this._hotbar.rect;
+        let click = new Rectangle(canvasPos, new Size(1, 1));
 
         // eww if else trees
-        if (this.aabb({
-            x: canvasPos.x,
-            y: canvasPos.y,
-            width: 1,
-            height: 1,
-        }, hotbar)) {
+        if (hotbar.collidesWith(click)) {
             this._hotbar.handle(canvasPos);
         } else {
             this._placeService.handle(mousePos);
         }
 
         this._mouseHandling = false;
-    }
-
-    // this is only so i can know if the mouse is in the hotbar
-    // TODO
-    aabb(rect1, rect2) {
-        return rect1.x < rect2.x + rect2.width &&
-            rect1.x + rect1.width > rect2.x &&
-            rect1.y < rect2.y + rect2.height &&
-            rect1.y + rect1.height > rect2.y;
     }
 }

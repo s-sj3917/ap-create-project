@@ -1,4 +1,3 @@
-import { Block } from "./blocks.js";
 import { Size, Rectangle, Point } from "./size.js";
 
 export class Hotbar {
@@ -26,12 +25,15 @@ export class Hotbar {
         for(let i = 0; i < this._blocks.length; i++) {
             this._instantiatedBlocks[i] = new this._blocks[i]();
         }
+
+        this._rect = this.generateRectangle();
     }
 
     /**
     @returns {ConstructorInfo}
      */
     get selected() {
+        // if it's an unknown block we'll justy return what we know works
         if (this._blocks[this._selected] === undefined) {
             return this._blocks[0];
         }
@@ -39,11 +41,18 @@ export class Hotbar {
         return this._blocks[this._selected];
     }
 
-    // TODO: more performance if i cache this?
     /**
+    Returns a rectangle which is the bounding box of the hotbar.
     @return {Rectangle}
      */
     get rect() {
+        return this._rect;
+    }
+
+    /**
+    @return {Rectangle}
+     */
+    generateRectangle() {
         // TODO: don't copy and paste this
         let x = Math.floor(this._screenConfig.width / 2);
         x -= Math.floor(this._hotbarSize / 2);
@@ -95,9 +104,10 @@ export class Hotbar {
     }
 
     /**
-    @param {number} id
-    @param {number} x
-    @param {number} y
+    @description Render an individual block into the hotbar
+    @param {number} id The slot in the hotbar
+    @param {number} x The x on the screen, grid-aligned by the tile config and id
+    @param {number} y The y on the screen
      */
     renderBlock(id, x, y) {
         let block = this._instantiatedBlocks[id];
@@ -110,6 +120,7 @@ export class Hotbar {
     }
 
     /**
+    @description Handles an on click, by the InputGlue usually
     @param {Point} mousePos
      */
     handle(mousePos) {
